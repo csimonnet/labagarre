@@ -33,3 +33,5 @@ while (!$game->isOver()) {
         ->endRound();
 }
 
+$game->displayResult();
+
