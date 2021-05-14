@@ -8,9 +8,13 @@ class Player
 
     public $name;
 
-    public $deck;
+    public Deck $deck;
 
     public function __construct() {
         $this->deck = new Deck();
+    }
+
+    public function incrementScore() {
+        $this->score++;
     }
 }

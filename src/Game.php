@@ -3,6 +3,7 @@
 namespace labagarre\src;
 
 use labagarre\src\model\Player;
+use labagarre\src\model\Round;
 use labagarre\src\service\DeckMaster;
 use labagarre\src\model\Deck;
 
@@ -11,6 +12,10 @@ class Game
     private array $players;
 
     private Deck $mainDeck;
+
+    private array $rounds;
+
+    private Round $currentRound;
 
     public function __construct() {
         $this->mainDeck = DeckMaster::buildMainDeck();
@@ -38,6 +43,7 @@ class Game
                 }
             }
         }
+        return $this;
 
     }
 
@@ -50,6 +56,40 @@ class Game
                 echo "{$card->value},";
             }
         }
+        return $this;
+    }
+
+    public function isOver() {
+        foreach($this->players as $player) {
+            if(count($player->deck->getCards()) > 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public function launchRound() {
+        $this->currentRound = new Round();
+        $this->displayStatus();
+        foreach ($this->players as $player) {
+            $cardPlayed = $player->deck->hasCards() ? $player->deck->takeCard() : null;
+            $this->currentRound->addCardPlayed($cardPlayed, $player);
+        }
+        return $this;
+    }
+
+    public function displayRoundStatus() {
+        echo "Manche en cours: \r\n";
+        echo $this->currentRound;
+        return $this;
+    }
+
+    public function endRound() {
+        $this->currentRound->computeWinner();
+        echo "Manche terminée : \r\n";
+        echo "Gagnant : {$this->currentRound->getWinner()->name}";
+        $this->rounds[] = clone $this->currentRound;
+        return $this;
     }
 
 }
