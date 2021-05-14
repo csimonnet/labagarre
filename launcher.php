@@ -7,31 +7,26 @@ spl_autoload_register(function($className) {
 });
 
 use labagarre\src\Game;
+use labagarre\src\display\menu\MenuDisplay;
 
-CONST NB_PLAYERS = 2;
+MenuDisplay::display();
+$players = MenuDisplay::initPlayers();
 
-echo "Bienvenue dans LA BAGARRE. \r\n";
-echo "La Bagarre est une version simplifiée de la bataille. Choisis juste un nom, et joins-toi au combat ! \r\n";
-echo "Prêt à combattre ? \r\n";
 
-$game = new Game();
+/*$game = new Game();
 
-for ($i=1; $i <= NB_PLAYERS; $i++) {
-    $playerName = "Joueur ".$i;
-    echo "Joueur {$i} : écris le nom de ton combattant : \r\n";
-    fscanf(STDIN, "%s", $playerName);
-    $game->addPlayer($playerName);
-}
-
-echo "Répartition des cartes en cours.... \r\n";
-$game->begin();
-echo "C'est parti !\r\n";
+$game->display()
+    ->begin()
+    ->display();
 
 while (!$game->isOver()) {
-    $game->launchRound()
-        ->displayRoundStatus()
-        ->endRound();
+    $game->beginRound()
+        ->displayRound()
+        ->endRound()
+        ->displayRound()
+    ;
 }
 
-$game->displayResult();
+$game->end()
+    ->display();*/
 

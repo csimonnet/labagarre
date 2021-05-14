@@ -13,9 +13,13 @@ class Game
 
     private Deck $mainDeck;
 
-    private array $rounds;
+    private array $rounds = [];
 
     private Round $currentRound;
+
+    private Player $winner;
+
+    private string $status = GameStatus::NOT_INITIALIZED;
 
     public function __construct() {
         $this->mainDeck = DeckMaster::buildMainDeck();
@@ -24,6 +28,7 @@ class Game
     public function begin(): Game {
         $this->mainDeck->shuffle();
         $this->distributeCards();
+        $this->status = GameStatus::INITIALIZED;
         return $this;
     }
 
@@ -47,18 +52,6 @@ class Game
 
     }
 
-    public function displayStatus() {
-        foreach($this->players as $player) {
-            echo "{$player->name} : {$player->score} \r\n";
-            $cardsNumber = count($player->deck->getCards());
-            echo "Cartes : ({$cardsNumber}) \r\n";
-            foreach($player->deck->getCards() as $card) {
-                echo "{$card->value},";
-            }
-        }
-        return $this;
-    }
-
     public function isOver() {
         foreach($this->players as $player) {
             if(count($player->deck->getCards()) > 0) {
@@ -68,37 +61,52 @@ class Game
         return true;
     }
 
-    public function launchRound() {
+    public function beginRound() {
+        $this->status = GameStatus::RUNNING;
         $this->currentRound = new Round();
-        $this->displayStatus();
-        foreach ($this->players as $player) {
-            $cardPlayed = $player->deck->hasCards() ? $player->deck->takeCard() : null;
-            $this->currentRound->addCardPlayed($cardPlayed, $player);
-        }
-        return $this;
-    }
+        $this->currentRound->begin($this->players);
 
-    public function displayRoundStatus() {
-        echo "Manche en cours: \r\n";
-        echo $this->currentRound;
         return $this;
     }
 
     public function endRound() {
-        $this->currentRound->computeWinner();
-        echo "Manche terminée : \r\n";
-        echo "Gagnant : {$this->currentRound->getWinner()->name}";
+        $this->currentRound->end();
         $this->rounds[] = clone $this->currentRound;
         return $this;
     }
 
-    public function displayResult() {
-        //TODO : manage tie
+    public function end() {
+        $this->computeWinner();
+        $this->status = GameStatus::OVER;
+        return $this;
+    }
+
+    public function getStatus() {
+        return $this->status;
+    }
+
+    public function displayRound() {
+        $this->currentRound->display();
+        return $this;
+    }
+
+    public function getCurrentRound() {
+        return $this->currentRound;
+    }
+
+    public function getCurrentRoundNumber() {
+        return count($this->rounds) + 1;
+    }
+
+    public function computeWinner() {
         usort($this->players, function($playerA, $playerB) {
             return $playerA->score <=> $playerB->score;
         });
-        $winner = $this->players[0];
-        echo "Le gagnant est {$winner->name} avec un score de {$winner->score}";
+        $this->winner = $this->players[0];
+    }
+
+    public function getWinner() {
+        return $this->winner;
     }
 
 }
