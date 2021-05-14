@@ -92,4 +92,13 @@ class Game
         return $this;
     }
 
+    public function displayResult() {
+        //TODO : manage tie
+        usort($this->players, function($playerA, $playerB) {
+            return $playerA->score <=> $playerB->score;
+        });
+        $winner = $this->players[0];
+        echo "Le gagnant est {$winner->name} avec un score de {$winner->score}";
+    }
+
 }
