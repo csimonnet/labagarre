@@ -2,17 +2,15 @@
 
 namespace labagarre\src\service;
 
+use labagarre\src\Configuration;
 use labagarre\src\model\Card;
 use labagarre\src\model\Deck;
 
-class DeckMaster
+class DeckBuilder
 {
-
-    const CARDS_NUMBER = 52;
-
     public static function buildMainDeck() : Deck{
         $mainDeck = new Deck();
-        for($i=1; $i <= self::CARDS_NUMBER; $i++) {
+        for($i=1; $i <= Configuration::NB_CARDS; $i++) {
             $card = new Card();
             $card->value = $i;
             $mainDeck->addCard($card);

@@ -6,27 +6,24 @@ spl_autoload_register(function($className) {
     include_once $className . '.php';
 });
 
-use labagarre\src\Game;
 use labagarre\src\display\menu\MenuDisplay;
+use labagarre\src\GameRunner;
+use labagarre\src\display\game\GameDisplay;
 
 MenuDisplay::display();
-$players = MenuDisplay::initPlayers();
+//$players = MenuDisplay::initPlayers();
+$gameRunner = new GameRunner();
+$gameRunner->init(['a', 'z']);
+GameDisplay::display($gameRunner);
 
 
-/*$game = new Game();
-
-$game->display()
-    ->begin()
-    ->display();
-
-while (!$game->isOver()) {
-    $game->beginRound()
-        ->displayRound()
-        ->endRound()
-        ->displayRound()
-    ;
+while(!$gameRunner->gameIsOver()) {
+    $gameRunner->nextStep();
+    GameDisplay::display($gameRunner);
+    //$continue = '';
+    //fscanf(STDIN, '%s', $continue);
 }
 
-$game->end()
-    ->display();*/
+$gameRunner->end();
+GameDisplay::display($gameRunner);
 
