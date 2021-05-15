@@ -3,7 +3,7 @@
 namespace labagarre\src\display\game;
 
 use labagarre\src\model\GameStatus;
-use labagarre\src\RoundRunner;
+use labagarre\src\runner\RoundRunner;
 
 class RoundDisplay
 {

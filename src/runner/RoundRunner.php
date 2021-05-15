@@ -1,6 +1,6 @@
 <?php
 
-namespace labagarre\src;
+namespace labagarre\src\runner;
 
 use labagarre\src\model\GameStatus;
 use labagarre\src\model\Round;
@@ -23,19 +23,22 @@ class RoundRunner {
         $this->status = GameStatus::INITIALIZED;
     }
 
-    public function isOver(): bool {
+    public function isComplete(): bool {
         return count($this->players) === 0;
     }
 
-    public function nextStep() : RoundRunner{
+    public function nextStep() {
         $this->status = GameStatus::RUNNING;
-        $player = array_shift($this->players);
-        $card = $player
-                     ->getDeck()
-                     ->takeCard();
-        $this->cardPlayed[] = ['card' => $card, 'player' => $player];
-        $this->round->addCardPlayed($card,$player);
-        return $this;
+        if(!$this->isComplete()) {
+            $player = array_shift($this->players);
+            $card = $player
+                ->getDeck()
+                ->takeCard();
+            $this->cardPlayed[] = ['card' => $card, 'player' => $player];
+            $this->round->addCardPlayed($card, $player);
+        } else {
+            throw new \Exception('Everyone has already played in this round.');
+        }
     }
 
     public function end(): void {

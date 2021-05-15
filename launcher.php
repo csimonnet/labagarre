@@ -1,27 +1,26 @@
 <?php
 
-spl_autoload_register(function($className) {
-    $className = str_replace("\\", DIRECTORY_SEPARATOR, $className);
-    $className = str_replace("labagarre", "./", $className);
-    include_once $className . '.php';
-});
+require_once "autoload.php";
 
 use labagarre\src\display\menu\MenuDisplay;
-use labagarre\src\GameRunner;
+use labagarre\src\runner\GameRunner;
+use labagarre\src\runner\RoundRunner;
 use labagarre\src\display\game\GameDisplay;
+use labagarre\src\service\DeckBuilder;
+
 
 MenuDisplay::display();
-//$players = MenuDisplay::initPlayers();
-$gameRunner = new GameRunner();
-$gameRunner->init(['a', 'z']);
+$players = MenuDisplay::initPlayers();
+
+//L'idéal ensuite serait de mettre cette construction dans une factory ou strategy, le launcher n'a pas à savoir tout ça
+$gameRunner = new GameRunner(DeckBuilder::buildMainDeck(), new RoundRunner());
+$gameRunner->init($players);
 GameDisplay::display($gameRunner);
 
 
 while(!$gameRunner->gameIsOver()) {
     $gameRunner->nextStep();
     GameDisplay::display($gameRunner);
-    //$continue = '';
-    //fscanf(STDIN, '%s', $continue);
 }
 
 $gameRunner->end();

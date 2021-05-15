@@ -2,8 +2,7 @@
 
 namespace labagarre\src\display\game;
 use labagarre\src\model\GameStatus;
-use labagarre\src\GameRunner;
-use labagarre\src\RoundRunner;
+use labagarre\src\runner\GameRunner;
 
 class GameDisplay
 {
