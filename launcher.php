@@ -1,37 +1,28 @@
 <?php
 
-spl_autoload_register(function($className) {
-    $className = str_replace("\\", DIRECTORY_SEPARATOR, $className);
-    $className = str_replace("labagarre", "./", $className);
-    include_once $className . '.php';
-});
+require_once "autoload.php";
 
-use labagarre\src\Game;
+use labagarre\src\display\menu\MenuDisplay;
+use labagarre\src\runner\GameRunner;
+use labagarre\src\runner\RoundRunner;
+use labagarre\src\display\game\GameDisplay;
+use labagarre\src\service\DeckBuilder;
 
-CONST NB_PLAYERS = 2;
 
-echo "Bienvenue dans LA BAGARRE. \r\n";
-echo "La Bagarre est une version simplifiée de la bataille. Choisis juste un nom, et joins-toi au combat ! \r\n";
-echo "Prêt à combattre ? \r\n";
+MenuDisplay::display();
+$players = MenuDisplay::initPlayers();
 
-$game = new Game();
+//L'idéal ensuite serait de mettre cette construction dans une factory ou strategy, le launcher n'a pas à savoir tout ça
+$gameRunner = new GameRunner(DeckBuilder::buildMainDeck(), new RoundRunner());
+$gameRunner->init($players);
+GameDisplay::display($gameRunner);
 
-for ($i=1; $i <= NB_PLAYERS; $i++) {
-    $playerName = "Joueur ".$i;
-    echo "Joueur {$i} : écris le nom de ton combattant : \r\n";
-    fscanf(STDIN, "%s", $playerName);
-    $game->addPlayer($playerName);
+
+while(!$gameRunner->gameIsOver()) {
+    $gameRunner->nextStep();
+    GameDisplay::display($gameRunner);
 }
 
-echo "Répartition des cartes en cours.... \r\n";
-$game->begin();
-echo "C'est parti !\r\n";
-
-while (!$game->isOver()) {
-    $game->launchRound()
-        ->displayRoundStatus()
-        ->endRound();
-}
-
-$game->displayResult();
+$gameRunner->end();
+GameDisplay::display($gameRunner);
 

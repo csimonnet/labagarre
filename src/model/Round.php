@@ -3,12 +3,14 @@
 namespace labagarre\src\model;
 
 
+use labagarre\src\display\RoundDisplay;
+use labagarre\src\GameStatus;
+
 class Round
 {
-
     private array $cardsPlayed;
 
-    private Player $winner;
+    private array $winners;
 
     public function addCardPlayed(Card $card, Player $player) {
         $this->cardsPlayed[] = [
@@ -17,28 +19,15 @@ class Round
         ];
     }
 
-    public function __toString() {
-        $status = "";
-        foreach($this->cardsPlayed as $cardPlayed) {
-            $status .= "{$cardPlayed['player']->name} : {$cardPlayed['card']->value} \r\n";
-        }
-        return $status;
+    public function getWinners() {
+        return $this->winners;
     }
 
-    /**
-     * @return Player
-     */
-    public function getWinner(): Player
-    {
-        return $this->winner;
+    public function getCardsPlayed() {
+        return $this->cardsPlayed;
     }
 
-    public function computeWinner() {
-        $highest = null;
-        foreach($this->cardsPlayed as $cardPlayed) {
-            $highest = (!isset($highest) || $cardPlayed['card']->value > $highest['card']->value ) ? $cardPlayed : $highest;
-        }
-        $this->winner = $highest['player'];
-        $this->winner->incrementScore();
+    public function setWinners(array $winners) {
+        $this->winners = $winners;
     }
 }
