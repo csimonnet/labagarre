@@ -6,15 +6,16 @@ use labagarre\src\model\Deck;
 use labagarre\src\model\Game;
 use labagarre\src\model\GameStatus;
 use labagarre\src\model\Player;
+use labagarre\src\service\DeckMaster;
 
-class GameRunner {
+class GameRunner implements Runner {
 
     private Game $game;
     private RoundRunner $roundRunner;
     private Deck $mainDeck;
     private string $status = GameStatus::NOT_INITIALIZED;
 
-    public function __construct($mainDeck, $roundRunner) {
+    public function __construct(Deck $mainDeck, RoundRunner $roundRunner) {
         $this->mainDeck = $mainDeck;
         $this->roundRunner = $roundRunner;
     }
@@ -23,7 +24,7 @@ class GameRunner {
         $this->game = new Game();
         $this->addPlayers($playersNames);
         $this->status = GameStatus::INITIALIZED;
-        $this->mainDeck->shuffle();
+        DeckMaster::shuffle($this->mainDeck);
         $this->distributeCards();
     }
 
@@ -37,6 +38,7 @@ class GameRunner {
         $this->mainDeck->shuffle();
         while ($this->mainDeck->hasCards()) {
             //on pourrait juste diviser le paquet en trois... mais ici ça "simule" quelqu'un qui distribuerait des cartes joueur par joueur ;)
+            //On peut également envisager de traiter cette méthode dans le DeckMaster et externaliser la distribution des cartes ; ainsi on pourrait avoir un jeu qui utilise potentiellement d'autres distributions.
             foreach($this->game->getPlayers() as $player) {
                 if ($this->mainDeck->hasCards()) {
                     $card = $this->mainDeck->takeCard();
@@ -47,12 +49,11 @@ class GameRunner {
         return $this;
     }
 
-    public function gameIsOver(): bool {
-        return $this->game->isOver() && $this->roundRunner->getStatus() === GameStatus::OVER;
+    public function isComplete(): bool {
+        return $this->game->isComplete() && $this->roundRunner->getStatus() === GameStatus::OVER;
     }
 
     public function nextStep() {
-
         if ($this->shouldInitRound()) {
             $this->roundRunner->init($this->game->getPlayers());
             $this->status = GameStatus::RUNNING;
@@ -66,8 +67,7 @@ class GameRunner {
     }
 
     private function shouldInitRound() {
-        return ($this->roundRunner->getStatus() === GameStatus::NOT_INITIALIZED
-                || $this->roundRunner->getStatus() === GameStatus::OVER);
+        return ($this->roundRunner->getStatus() === GameStatus::NOT_INITIALIZED || $this->roundRunner->getStatus() === GameStatus::OVER);
     }
 
     public function end() {
@@ -91,7 +91,7 @@ class GameRunner {
         return $this->status;
     }
 
-    public function getWinner() {
+    public function getWinners() {
         return $this->game->getWinner();
     }
 

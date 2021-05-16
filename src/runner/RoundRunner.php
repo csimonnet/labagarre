@@ -5,7 +5,7 @@ namespace labagarre\src\runner;
 use labagarre\src\model\GameStatus;
 use labagarre\src\model\Round;
 
-class RoundRunner {
+class RoundRunner implements Runner {
 
     private Round $round;
 
@@ -17,7 +17,7 @@ class RoundRunner {
 
     private array $winners;
 
-    public function init($players) {
+    public function init(array $players) {
         $this->players = $players;
         $this->round = new Round();
         $this->status = GameStatus::INITIALIZED;
@@ -34,7 +34,7 @@ class RoundRunner {
             $card = $player
                 ->getDeck()
                 ->takeCard();
-            $this->cardPlayed[] = ['card' => $card, 'player' => $player];
+            $this->cardPlayed[] = [Round::CARD => $card, Round::PLAYER => $player];
             $this->round->addCardPlayed($card, $player);
         } else {
             throw new \Exception('Everyone has already played in this round.');
@@ -52,14 +52,14 @@ class RoundRunner {
         $highestScore = 0;
 
         foreach($this->round->getCardsPlayed() as $cardPlayed) {
-            $highestScore = $highestScore > $cardPlayed['card']->value ? $highestScore : $cardPlayed['card']->value;
+            $highestScore = $highestScore > $cardPlayed[Round::CARD]->getValue() ? $highestScore : $cardPlayed[Round::CARD]->getValue();
         }
 
         $highestPlayers = array_values(array_filter($this->round->getCardsPlayed(), function($cardPlayed) use ($highestScore) {
-            return $cardPlayed['card']->value === $highestScore;
+            return $cardPlayed[Round::CARD]->getValue() === $highestScore;
         }));
 
-        $this->winners = array_map(function($cardPlayed) { return $cardPlayed['player']; }, $highestPlayers);
+        $this->winners = array_map(function($cardPlayed) { return $cardPlayed[Round::PLAYER]; }, $highestPlayers);
         foreach($this->winners as $winner) {
             $winner->incrementScore();
         }

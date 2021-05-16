@@ -23,14 +23,10 @@ class RoundRunnerTest extends TestCase
     {
         $player1 = new Player("Rincevent");
         $player2 = new Player("Deux-Fleurs");
-        $card1 = new Card();
-        $card2 = new Card();
-        $card3 = new Card();
-        $card4 = new Card();
-        $card1->value = 1;
-        $card2->value = 2;
-        $card3->value = 3;
-        $card4->value = 4;
+        $card1 = new Card(1);
+        $card2 = new Card(2);
+        $card3 = new Card(3);
+        $card4 = new Card(4);
 
         $player1->getDeck()->addCard($card1);
         $player1->getDeck()->addCard($card2);
@@ -53,10 +49,8 @@ class RoundRunnerTest extends TestCase
     {
         $player1 = new Player("Rincevent");
         $player2 = new Player("Deux-Fleurs");
-        $card1 = new Card();
-        $card2 = new Card();
-        $card1->value = 1;
-        $card2->value = 2;
+        $card1 = new Card(1);
+        $card2 = new Card(2);
 
         $player1->getDeck()->addCard($card1);
         $player2->getDeck()->addCard($card2);
@@ -73,10 +67,8 @@ class RoundRunnerTest extends TestCase
         $this->expectException(\Exception::class);
         $player1 = new Player("Rincevent");
         $player2 = new Player("Deux-Fleurs");
-        $card1 = new Card();
-        $card2 = new Card();
-        $card1->value = 1;
-        $card2->value = 2;
+        $card1 = new Card(1);
+        $card2 = new Card(2);
 
         $player1->getDeck()->addCard($card1);
         $player2->getDeck()->addCard($card2);
@@ -92,10 +84,8 @@ class RoundRunnerTest extends TestCase
     {
         $player1 = new Player("Rincevent");
         $player2 = new Player("Deux-Fleurs");
-        $card1 = new Card();
-        $card2 = new Card();
-        $card1->value = 1;
-        $card2->value = 2;
+        $card1 = new Card(1);
+        $card2 = new Card(2);
 
         $player1->getDeck()->addCard($card1);
         $player2->getDeck()->addCard($card2);

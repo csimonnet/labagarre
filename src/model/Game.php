@@ -2,9 +2,6 @@
 
 namespace labagarre\src\model;
 
-use labagarre\src\model\GameStatus;
-use labagarre\src\service\DeckBuilder;
-
 class Game
 {
     private array $players;
@@ -23,7 +20,7 @@ class Game
         return $this;
     }
 
-    public function isOver() {
+    public function isComplete() {
         foreach($this->players as $player) {
             if(count($player->getDeck()->getCards()) > 0) {
                 return false;
@@ -48,11 +45,6 @@ class Game
 
     public function getWinner() {
         return $this->winner;
-    }
-
-    public function setStatus($status) {
-        $this->status = $status;
-        return $this;
     }
 
     public function getPlayers() {
