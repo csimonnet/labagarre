@@ -9,16 +9,13 @@ class GameDisplay
 
     public static function display(GameRunner $gameRunner) {
         switch($gameRunner->getStatus()) {
-            case GameStatus::NOT_INITIALIZED: {
-                echo "<Répartition des cartes> \r\n";
-                break;
-            }
             case GameStatus::INITIALIZED: {
-                echo "<C'est parti!> \r\n";
+                echo "\033[1m\033[34m---------------<A good day for a swell battle! (ง'̀-'́)ง >---------------- \r\n\033[0m";
                 break;
             }
             case GameStatus::RUNNING: {
-                echo "<Round {$gameRunner->getCurrentRoundNumber()}> \r\n";
+                echo "\r\n";
+                echo "\033[1m\033[33m---------------<Round {$gameRunner->getCurrentRoundNumber()}>--------------- \033[0m\r\n";
                 break;
             }
             case GameStatus::RUNNING_ROUND: {
@@ -26,7 +23,10 @@ class GameDisplay
                 break;
             }
             case GameStatus::OVER: {
-                echo "La bagarre est finie ! Le grand gagnant est {$gameRunner->getWinner()->name} avec {$gameRunner->getWinner()->score} points !";
+                echo "\033[1m\033[31m_____________________________________________________________\r\n\r\n ";
+                echo "\033[1m La bagarre est finie ! \r\n \r\n \033[0m Le grand gagnant est \033[1m\033[32m{$gameRunner->getWinners()->name}\033[0m avec\033[1m\033[32m {$gameRunner->getWinners()->score}\033[0m points ! \033[1mBravo ! (•̀ᴗ•́)و ̑̑\r\n";
+                echo "\033[1m\033[31m_____________________________________________________________\r\n";
+
             }
         }
     }
